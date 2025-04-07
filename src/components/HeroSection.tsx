@@ -2,6 +2,7 @@
 import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const HeroSection = () => {
   const profileImageRef = useRef<HTMLDivElement>(null);
@@ -25,6 +26,13 @@ const HeroSection = () => {
     document.addEventListener('mousemove', handleMouseMove);
     return () => document.removeEventListener('mousemove', handleMouseMove);
   }, []);
+
+  const scrollToNextSection = () => {
+    const aboutSection = document.getElementById('about');
+    if (aboutSection) {
+      aboutSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
@@ -106,34 +114,51 @@ const HeroSection = () => {
             transition={{ duration: 0.8, delay: 0.3 }}
           >
             <div className="relative">
-              <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-primary/20 to-accent/20 rounded-full blur-2xl" />
+              <div className="absolute inset-0 -z-10 rounded-full blur-2xl bg-gradient-to-tr from-primary/20 via-accent/20 to-primary/20 animate-pulse" style={{ animationDuration: '4s' }} />
+              
               <div 
                 ref={profileImageRef}
-                className="relative w-72 h-72 overflow-hidden rounded-full border-4 border-white/10 shadow-xl transition-transform duration-200"
+                className="relative w-64 h-64 md:w-80 md:h-80 transition-transform duration-200 group"
               >
-                {/* Replace this with your actual profile image */}
-                <div className="w-full h-full bg-gradient-to-br from-secondary to-background flex items-center justify-center text-4xl font-bold text-muted-foreground">
-                  Your Photo
-                </div>
+                <Avatar className="w-full h-full border-4 border-white/10 shadow-xl">
+                  <AvatarImage 
+                    src="/placeholder.svg" 
+                    alt="Your profile photo"
+                    className="object-cover" 
+                  />
+                  <AvatarFallback className="bg-gradient-to-br from-primary/30 to-accent/30 text-foreground text-4xl font-bold flex items-center justify-center">
+                    YN
+                  </AvatarFallback>
+                </Avatar>
+                
+                {/* Decorative elements */}
+                <div className="absolute -top-4 -right-4 w-8 h-8 rounded-full bg-primary animate-pulse" style={{ animationDuration: '2s' }} />
+                <div className="absolute -bottom-4 -left-4 w-6 h-6 rounded-full bg-accent animate-pulse" style={{ animationDuration: '3s' }} />
               </div>
             </div>
           </motion.div>
         </div>
 
-        {/* Scroll Down Indicator */}
+        {/* Scroll Down Indicator - Updated to be more responsive */}
         <motion.div 
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center"
+          className="absolute left-1/2 transform -translate-x-1/2 w-full flex flex-col items-center"
+          style={{ bottom: "5vh" }}
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1, duration: 0.8 }}
         >
-          <span className="text-sm text-muted-foreground mb-2">Scroll Down</span>
-          <motion.div 
-            animate={{ y: [0, 10, 0] }} 
+          <span className="text-sm text-muted-foreground mb-2 hidden sm:block">Scroll Down</span>
+          <motion.button
+            onClick={scrollToNextSection}
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-secondary/50 backdrop-blur-sm hover:bg-primary/20 transition-colors"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            animate={{ y: [0, 6, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}
+            aria-label="Scroll to next section"
           >
-            <ChevronDown className="text-primary" />
-          </motion.div>
+            <ChevronDown className="text-primary w-5 h-5" />
+          </motion.button>
         </motion.div>
       </div>
     </section>
